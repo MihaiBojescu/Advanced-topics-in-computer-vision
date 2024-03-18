@@ -44,7 +44,7 @@ const strategyPicker = () => {
 }
 
 const goFullscreen = async () => {
-    return await document.body.requestFullscreen({ navigationUI: "hide "})
+    return await document.body.requestFullscreen({ navigationUI: "hide" })
 }
 
 const send = async (state, event) => {
