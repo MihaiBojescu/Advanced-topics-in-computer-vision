@@ -15,7 +15,7 @@ class ArgsParser:
         parser.add_argument(
             "--image_filename_slug",
             type=str,
-            default="cv_",
+            default="rh_",
             required=False,
             help="Slug for the image filename. Used to ensure unicity",
         )

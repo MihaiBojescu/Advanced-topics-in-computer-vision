@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Webcam Picture Capture</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+    #clickCounter {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 18px;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <div id="clickCounter">Clicks: 0</div>
+
+  <script>
+    const colorPalettes = [
+      ['#FF4E50', '#FC913A', '#F9D423', '#EDE574', '#E1F5C4'],
+      ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900'],
+      ['#FE4365', '#FC9D9A', '#F9CDAD', '#C8C8A9', '#83AF9B'],
+      ['#ECD078', '#D95B43', '#C02942', '#542437', '#53777A'],
+      ['#556270', '#4ECDC4', '#C7F464', '#FF6B6B', '#C44D58']
+    ];
+    let clickCount = 0;
+    const clickCounter = document.getElementById('clickCounter');
+
+    function generateUniqueBackground() {
+      const palette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+      const randomColor1 = palette[Math.floor(Math.random() * palette.length)];
+      const randomColor2 = palette[Math.floor(Math.random() * palette.length)];
+      const randomColor3 = palette[Math.floor(Math.random() * palette.length)];
+      const angle = Math.floor(Math.random() * 360);
+      const noise = Math.floor(Math.random() * 10000000);
+      const shapes = ['circle', 'polygon', 'star'];
+      const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+      const randomX = Math.floor(Math.random() * 100);
+      const randomY = Math.floor(Math.random() * 100);
+      const randomSize = Math.floor(Math.random() * 50) + 10;
+      const randomOpacity = Math.random() * 0.5 + 0.3;
+      const shapeColor = palette[Math.floor(Math.random() * palette.length)];
+      
+      const shapeStyle = `
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="pattern" x="${randomX}%" y="${randomY}%" width="${randomSize}" height="${randomSize}" patternUnits="userSpaceOnUse" patternTransform="rotate(${angle})">
+              <${randomShape} cx="50%" cy="50%" r="${randomSize / 2}" fill="${shapeColor}" fill-opacity="${randomOpacity}" />
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern)" />
+        </svg>
+      `;
+      
+      return `
+        linear-gradient(${angle}deg, ${randomColor1}, ${randomColor2}, ${randomColor3}),
+        url("data:image/svg+xml;base64,${btoa(shapeStyle)}"),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")
+      `;
+    }
+
+    document.addEventListener('click', (event) => {
+      const coordinates = {
+        x: event.clientX,
+        y: event.clientY
+      };
+
+      fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(coordinates)
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('Picture captured successfully');
+          } else {
+            console.error('Failed to capture picture');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+      document.body.style.backgroundImage = generateUniqueBackground();
+      clickCount++;
+      clickCounter.textContent = `Clicks: ${clickCount}`;
+    });
+  </script>
+</body>
+</html>

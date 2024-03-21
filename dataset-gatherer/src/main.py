@@ -2,7 +2,7 @@
 from services.args import ArgsParser
 from services.business_logic import BusinessLogic
 from services.camera import ImageIOCamera
-from services.display import Framework13Display
+from services.display import Framework13Display, DellLatitudeDisplay
 from services.distance import FixedDistance
 from services.web import Web
 from services.writer import Writer
@@ -13,7 +13,7 @@ def main():
     args = args_parser.run()
 
     camera = ImageIOCamera()
-    display = Framework13Display()
+    display = DellLatitudeDisplay()
     distance = FixedDistance(distance=args.distance)
     writer = Writer(
         path="./outputs",

@@ -24,3 +24,11 @@ class Framework13Display:
             resolution_x=2256,
             resolution_y=1504,
         )
+class DellLatitudeDisplay:
+    def get(self) -> DisplayAttributes:
+        return DisplayAttributes(
+            width=344,
+            height=194,
+            resolution_x=1920,
+            resolution_y=1080,
+        )
