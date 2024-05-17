@@ -14,7 +14,9 @@ def main():
     args = parse_arguments()
     transforms: t.Callable[[keras.KerasTensor], keras.KerasTensor] = []
 
-    dataset = ImageDataset(data_path="./dataset", transforms=transforms)
+    train_dataset = ImageDataset(data_file_path="./dataset/train.csv", transforms=transforms)
+    validation_dataset = ImageDataset(data_file_path="./dataset/validation.csv", transforms=transforms)
+    test_dataset = ImageDataset(data_file_path="./dataset/test.csv", transforms=transforms)
 
     # TODO: implement the rest:
     #    1. add image transformations to enhance accuracy (ideas: remove background, extract eyes only)

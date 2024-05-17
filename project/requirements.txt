@@ -1,8 +1,15 @@
+absl-py==2.1.0
 filelock==3.13.1
 fsspec==2024.3.0
+h5py==3.11.0
 Jinja2==3.1.3
+keras==3.3.3
+markdown-it-py==3.0.0
 MarkupSafe==2.1.5
+mdurl==0.1.2
+ml-dtypes==0.4.0
 mpmath==1.3.0
+namex==0.0.8
 networkx==3.2.1
 numpy==1.26.4
 nvidia-cublas-cu12==12.1.3.1
@@ -17,7 +24,11 @@ nvidia-cusparse-cu12==12.1.0.106
 nvidia-nccl-cu12==2.19.3
 nvidia-nvjitlink-cu12==12.4.99
 nvidia-nvtx-cu12==12.1.105
+optree==0.11.0
 pillow==10.2.0
+Pygments==2.18.0
+rich==13.7.1
+setuptools==69.5.1
 sympy==1.12
 torch==2.2.1
 torchvision==0.17.1

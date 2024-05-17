@@ -1,10 +1,9 @@
-from dataclasses import dataclass
-import os
 import csv
 import typing as t
+from dataclasses import dataclass
+
 import keras
 from keras.preprocessing.image import load_img
-from PIL import Image
 
 
 @dataclass
@@ -21,8 +20,6 @@ class Metadata:
 class Label:
     x: int
     y: int
-    width: int
-    height: int
 
 
 class ImageDataset:
@@ -34,7 +31,7 @@ class ImageDataset:
     def __init__(
         self,
         *args,
-        data_path: str,
+        data_file_path: str,
         transforms: t.Optional[
             t.Callable[[keras.KerasTensor], keras.KerasTensor]
         ] = None,
@@ -42,16 +39,17 @@ class ImageDataset:
         super().__init__(*args)
 
         self.__transforms = transforms
-        self.__data, self.__labels, self.__metas = self.__load_data(data_path)
+        self.__data, self.__labels, self.__metas = self.__load_data(data_file_path=data_file_path)
 
     def __load_data(
-        self, data_path: str
+        self, data_file_path: str
     ) -> t.Tuple[t.List[keras.KerasTensor], t.List[Label], t.List[Metadata]]:
         data: t.List[t.Tuple[str, keras.KerasTensor]] = []
         labels: t.List[Label] = []
         metas: t.List[Metadata] = []
+        data_file = data_file_path or f'{data_file_path}/train.csv'
 
-        with open(f"{data_path}/dataset.csv") as file:
+        with open(data_file) as file:
             reader = csv.reader(file)
             next(reader)
 
@@ -63,11 +61,11 @@ class ImageDataset:
                 height = int(row[4])
                 distance = float(row[5])
 
-                labels.append(Label(x, y, width, height))
+                labels.append(Label(x, y))
                 metas.append(Metadata(filename, x, y, width, height, distance))
 
         for entry in metas:
-            tensor = load_img(f"{data_path}/images/{entry.filename}")
+            tensor = load_img(f"{data_file_path}/images/{entry.filename}")
             data.append(tensor)
 
         return data, labels, metas
