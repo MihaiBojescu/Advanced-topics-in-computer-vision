@@ -1,88 +1,84 @@
 import csv
 import typing as t
-from dataclasses import dataclass
 from keras.preprocessing.image import load_img
-
-
-@dataclass
-class Metadata:
-    filename: str
-    x: int
-    y: int
-    width: int
-    height: int
-    distance: float
-
-
-@dataclass
-class Label:
-    x: int
-    y: int
-
-
-T = t.TypeVar("T")
-U = t.TypeVar("U")
-L = t.TypeVar("L")
+from src.data.common import Metadata, T, U
 
 
 class ImageDataset(t.Generic[T, U]):
+    __data_path: str
+    __data_file_path: str
     __transforms: t.Optional[t.Callable[[T], U]]
     __label_transforms: t.Optional[t.Callable[[T], U]]
-    __data: t.List[T]
-    __labels: t.List[L]
-    __metas: t.List[Metadata]
+
+    __current_loaded_index: int
+    __data_file_rows: t.List[t.Tuple]
+    __data: T
+    __label: L
+    __meta: Metadata
 
     def __init__(
         self,
         *args,
         data_path: str,
-        data_file: t.Optional[str],
+        data_file_path: t.Optional[str],
         transforms: t.Optional[t.Callable[[T], U]] = None,
         label_transforms: t.Optional[t.Callable[[L], L]] = None,
     ):
         super().__init__(*args)
 
+        self.__data_path = data_path
+        self.__data_file_path = (
+            data_file_path if data_file_path is not None else "train.csv"
+        )
         self.__transforms = transforms
         self.__label_transforms = label_transforms
-        self.__data, self.__labels, self.__metas = self.__load_data(
-            data_path=data_path, data_file=data_file
-        )
 
-    def __load_data(
-        self, data_path: str, data_file: t.Optional[str]
-    ) -> t.Tuple[t.List[T], t.List[L], t.List[Metadata]]:
-        data: t.List[T] = []
-        labels: t.List[L] = []
-        metas: t.List[Metadata] = []
-        data_file = data_file if data_file is not None else "train.csv"
+        self.__data = None
+        self.__label = None
+        self.__meta = None
+        self.__current_loaded_index = None
+        self.__data_file_rows = self.__read_data_file()
 
-        with open(f"{data_path}/{data_file}") as file:
+    def __read_data_file(self):
+        rows = []
+
+        with open(f"{self.__data_path}/{self.__data_file_path}") as file:
             reader = csv.reader(file)
             next(reader)
 
             for row in reader:
-                filename = row[0]
-                x = int(float(row[1]))
-                y = int(float(row[2]))
-                width = int(row[3])
-                height = int(row[4])
-                distance = float(row[5])
+                rows.append(row)
 
-                labels.append(Label(x, y))
-                metas.append(Metadata(filename, x, y, width, height, distance))
+        return rows
 
-        for entry in metas:
-            image = load_img(f"{data_path}/images/{entry.filename}")
-            data.append(image)
+    def __load_data(
+        self, index: int
+    ) -> t.Tuple[t.List[T], t.List[L], t.List[Metadata]]:
+        row = self.__data_file_rows[index]
 
-        return data, labels, metas
+        filename = row[0]
+        x = int(float(row[1]))
+        y = int(float(row[2]))
+        width = int(row[3])
+        height = int(row[4])
+        distance = float(row[5])
+
+        data = load_img(f"{self.__data_path}/images/{filename}")
+        label = Label(x, y)
+        meta = Metadata(filename, x, y, width, height, distance)
+
+        return data, label, meta
 
     def __len__(self) -> int:
-        return len(self.__data)
+        return len(self.__data_file_rows)
 
     def __getitem__(self, index) -> t.Tuple[U, L]:
-        data = self.__data[index]
-        label = self.__labels[index]
+        if index != self.__current_loaded_index:
+            self.__data, self.__label, self.__meta = self.__load_data(index=index)
+            self.__current_loaded_index = index
+
+        data = self.__data
+        label = self.__label
 
         if self.__transforms:
             for transform in self.__transforms:
@@ -93,3 +89,5 @@ class ImageDataset(t.Generic[T, U]):
                 label = transform(label)
 
         return data, label
+
+

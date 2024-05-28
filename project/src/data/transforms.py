@@ -2,7 +2,6 @@ import typing as t
 import keras
 from PIL import Image
 import numpy as np
-from torch import zeros
 from keras import KerasTensor
 from keras.ops import convert_to_tensor
 
