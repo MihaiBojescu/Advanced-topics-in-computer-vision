@@ -1,9 +1,9 @@
 from multiprocessing import Pool
 import typing as t
 import numpy as np
-from src.data.common import L, T
-from src.data.dataloader import ImageDataloader
-from src.data.dataset import ImageDataset
+from data.common import L, T, U, Label
+from data.dataloader import ImageDataloader
+from data.dataset import ImageDataset
 
 class MultiworkerImageLoaderMapper(t.Generic[T, L]):
     __dataset: ImageDataset
@@ -12,7 +12,6 @@ class MultiworkerImageLoaderMapper(t.Generic[T, L]):
         self.__dataset = dataset
 
     def __call__(self, index_batch: t.List[int]) -> t.List[t.Tuple[T, L]]:
-        print(index_batch)
         return [self.__dataset[i] for i in index_batch]
 
 

@@ -1,7 +1,7 @@
 import csv
 import typing as t
 from keras.preprocessing.image import load_img
-from src.data.common import Metadata, T, U
+from data.common import Metadata, T, U, L, Label
 
 
 class ImageDataset(t.Generic[T, U]):

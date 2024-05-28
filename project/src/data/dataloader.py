@@ -1,7 +1,7 @@
 import typing as t
 import numpy as np
-from src.data.common import L, T
-from src.data.dataset import ImageDataset
+from data.common import L, T, U
+from data.dataset import ImageDataset
 
 
 class ImageDataloader(t.Generic[T, L]):
