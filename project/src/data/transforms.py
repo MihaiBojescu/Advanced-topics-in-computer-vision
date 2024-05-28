@@ -1,12 +1,18 @@
 import typing as t
-import keras
-from PIL import Image
-import numpy as np
-from keras import KerasTensor
-from keras.ops import convert_to_tensor
+from PIL.Image import Image
+from keras import KerasTensor, ops
 
-def grayscale_transform(img: keras.KerasTensor) -> keras.KerasTensor:
+def grayscale_transform(img: Image) -> Image:
     return img.convert('L')
+
+def to_tensor(img: Image) -> KerasTensor:
+    return ops.convert_to_tensor(img)
+
+def normalise_tensor(tensor: KerasTensor) -> KerasTensor:
+    max_val = ops.max(tensor)
+    min_val = ops.min(tensor)
+
+    return (tensor - min_val) / (max_val - min_val)
 
 def normalize_coordinates(label: t.Tuple[int, int, int, int], img_size: t.Tuple[int, int]) -> t.Tuple[float, float, float, float]:
     x, y, width, height = label
