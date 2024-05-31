@@ -1,31 +1,31 @@
 import typing as t
 from PIL.Image import Image
 from keras import KerasTensor, ops
+import keras
+
+from src.data.common import Label
+
 
 def grayscale_transform(img: Image) -> Image:
-    return img.convert('L')
+    return img.convert("L")
+
 
 def to_tensor(img: Image) -> KerasTensor:
     tensor = ops.convert_to_tensor(img)
     return ops.expand_dims(tensor, axis=2)
+
+
+def image_resize(image):
+    return keras.ops.image.resize(
+        image, (64, 64), interpolation="bicubic", antialias=True
+    )
+
 
 def normalise_tensor(tensor: KerasTensor) -> KerasTensor:
     max_val = ops.max(tensor)
     min_val = ops.min(tensor)
 
     return (tensor - min_val) / (max_val - min_val)
-
-def normalize_coordinates(label: t.Tuple[int, int, int, int], img_size: t.Tuple[int, int]) -> t.Tuple[float, float, float, float]:
-    x, y, width, height = label
-    max_x, max_y = img_size
-    
-    normalized_x = x / max_x
-    normalized_y = y / max_y
-    normalized_width = width / max_x
-    normalized_height = height / max_y
-    
-    return normalized_x, normalized_y, normalized_width, normalized_height
-
 
 class Padding:
     _max_x: int
