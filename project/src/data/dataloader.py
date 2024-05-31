@@ -7,6 +7,7 @@ from data.dataset import ImageDataset
 class ImageDataloader(t.Generic[T, L]):
     _batch_size: int
     _dataset: ImageDataset
+    _dataset_indices: np.array[int]
 
     _current_loaded_batch: int
     _data: np.ndarray[T, np.dtype]
@@ -17,11 +18,15 @@ class ImageDataloader(t.Generic[T, L]):
         *args,
         dataset: ImageDataset,
         batch_size: int,
+        shuffle: bool = False
     ):
         super().__init__(*args)
 
         self._dataset = dataset
+        self._dataset_indices = np.array(range(len(dataset)))
+        self._dataset_indices = np.random.shuffle(self._dataset_indices) if shuffle else self._dataset_indices
         self._batch_size = batch_size
+        self._shuffle = shuffle
 
         self._current_loaded_batch = None
 
@@ -39,7 +44,7 @@ class ImageDataloader(t.Generic[T, L]):
         labels = np.empty(difference, dtype=object)
 
         for i in range(batch_start_row_index, batch_end_row_index):
-            data[i % self._batch_size], labels[i % self._batch_size] = self._dataset[i]
+            data[i % self._batch_size], labels[i % self._batch_size] = self._dataset[self._dataset_indices[i]]
 
         return data, labels
 
