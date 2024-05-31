@@ -40,7 +40,7 @@ class Padding:
         padding_x = int((self._max_x - tensor.shape[0]) / 2)
         padding_y = int((self._max_y - tensor.shape[1]) / 2)
 
-        padded_tensor = zeros(
+        padded_tensor = ops.zeros(
             (self._max_x, self._max_y, tensor.shape[2]),
             dtype=tensor.dtype,
             requires_grad=False,
@@ -52,4 +52,4 @@ class Padding:
             :,
         ] = tensor
 
-        return convert_to_tensor(x=padded_tensor, dtype=tensor.dtype)
+        return ops.convert_to_tensor(x=padded_tensor, dtype=tensor.dtype)
