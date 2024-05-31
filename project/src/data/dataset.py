@@ -1,10 +1,34 @@
 import csv
 import typing as t
+import keras
+import numpy as np
+from dataclasses import dataclass
 from keras.preprocessing.image import load_img
-from data.common import Metadata, T, U, L, Label
+from multiprocessing.pool import Pool
 
 
-class ImageDataset(t.Generic[T, U]):
+@dataclass
+class Metadata:
+    filename: str
+    x: int
+    y: int
+    width: int
+    height: int
+    distance: float
+
+
+@dataclass
+class Label:
+    x: int
+    y: int
+
+
+T = t.TypeVar("T")
+U = t.TypeVar("U")
+L = t.TypeVar("L")
+
+
+class ImageDataset(keras.utils.Sequence):
     __data_path: str
     __data_file_path: str
     __transforms: t.Optional[t.Callable[[T], U]]
@@ -24,7 +48,7 @@ class ImageDataset(t.Generic[T, U]):
         transforms: t.Optional[t.Callable[[T], U]] = None,
         label_transforms: t.Optional[t.Callable[[L], L]] = None,
     ):
-        super().__init__(*args)
+        super().__init__(*args, use_multiprocessing=True, workers=8)
 
         self.__data_path = data_path
         self.__data_file_path = (
@@ -89,5 +113,3 @@ class ImageDataset(t.Generic[T, U]):
                 label = transform(label)
 
         return data, label
-
-
