@@ -85,7 +85,7 @@ class ImageDataset(t.Generic[T, U]):
                 data = transform(data)
 
         if self.__label_transforms:
-            for transform in self.__transforms:
+            for transform in self.__label_transforms:
                 label = transform(label)
 
         return data, label

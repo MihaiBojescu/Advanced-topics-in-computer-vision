@@ -9,9 +9,9 @@ from data.dataset import ImageDataset
 
 class MultiworkerImageLoaderMapper(t.Generic[T, L]):
     __dataset: ImageDataset
-    __dataset_indices: np.array[int]
+    __dataset_indices: np.ndarray[t.Literal["N"], int]
 
-    def __init__(self, dataset: ImageDataset, dataset_indices: np.array[int]):
+    def __init__(self, dataset: ImageDataset, dataset_indices: np.ndarray[t.Literal["N"], int]):
         self.__dataset = copy(dataset)
         self.__dataset_indices = dataset_indices
 
@@ -42,7 +42,7 @@ class MultiworkerImageLoader(ImageDataloader[T, L]):
 
     def __load_data(
         self, index: int
-    ) -> t.Tuple[np.ndarray[T, np.dtype], np.ndarray[L, np.dtype]]:
+    ) -> t.Tuple[np.ndarray[t.Litera["N"], T], np.ndarray[t.Literal["N"], L]]:
         batch_start_row_index = index * self._batch_size
         batch_end_row_index = batch_start_row_index + self._batch_size
         batch_end_row_index = min(batch_end_row_index, len(self._dataset))

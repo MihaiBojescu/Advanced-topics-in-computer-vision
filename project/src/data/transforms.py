@@ -6,7 +6,8 @@ def grayscale_transform(img: Image) -> Image:
     return img.convert('L')
 
 def to_tensor(img: Image) -> KerasTensor:
-    return ops.convert_to_tensor(img)
+    tensor = ops.convert_to_tensor(img)
+    return ops.expand_dims(tensor, axis=2)
 
 def normalise_tensor(tensor: KerasTensor) -> KerasTensor:
     max_val = ops.max(tensor)

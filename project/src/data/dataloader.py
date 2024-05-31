@@ -7,11 +7,11 @@ from data.dataset import ImageDataset
 class ImageDataloader(t.Generic[T, L]):
     _batch_size: int
     _dataset: ImageDataset
-    _dataset_indices: np.array[int]
+    _dataset_indices: np.ndarray[t.Literal["N"], int]
 
     _current_loaded_batch: int
-    _data: np.ndarray[T, np.dtype]
-    _labels: np.ndarray[L, np.dtype]
+    _data: np.ndarray[t.Literal["N"], T]
+    _labels: np.ndarray[t.Literal["N"], L]
 
     def __init__(
         self,
@@ -32,7 +32,7 @@ class ImageDataloader(t.Generic[T, L]):
 
     def __load_data(
         self, index: int
-    ) -> t.Tuple[np.ndarray[T, np.dtype], np.ndarray[L, np.dtype]]:
+    ) -> t.Tuple[np.ndarray[t.Literal["N"], T], np.ndarray[t.Literal["N"], L]]:
         batch_start_row_index = index * self._batch_size
         batch_end_row_index = batch_start_row_index + self._batch_size
         batch_end_row_index = min(batch_end_row_index, len(self._dataset))
