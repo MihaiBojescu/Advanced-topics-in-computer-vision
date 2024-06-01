@@ -46,12 +46,12 @@ class Model(keras.models.Model):
         )
         self._model.compile(
             optimizer=keras.optimizers.Adam(),
-            loss=keras.losses.MeanSquaredError(),
-            metrics=[keras.metrics.Accuracy()],
+            loss=keras.losses.MeanSquaredLogarithmicError(),
+            metrics=[keras.metrics.MeanAbsoluteError()],
         )
 
     def fit(self, dataset):
-        output = self._model.fit(dataset, epochs=5)
+        output = self._model.fit(dataset, epochs=20)
         last_loss = output.history['loss'][-1]
 
         self._model.save(f'./outputs/model_{time.time_ns()}_loss_{last_loss:.4f}.keras')
