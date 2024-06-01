@@ -29,9 +29,9 @@ def main():
         label_transforms=label_transforms,
     )
 
-    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=32)
-    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=32)
-    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=32)
+    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=64)
+    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=64)
+    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=64)
 
     model = Model()
     model.fit(train_dataloader)
