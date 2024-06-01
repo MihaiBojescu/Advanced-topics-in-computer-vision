@@ -12,11 +12,16 @@ def to_tensor(img: Image) -> KerasTensor:
     return ops.expand_dims(tensor, axis=2)
 
 
-def image_resize(image):
-    return keras.ops.image.resize(
-        image, (64, 64), interpolation="bilinear", antialias=True
-    )
+class ImageResize:
+    __size: tuple[int, int]
 
+    def __init__(self, size: tuple[int, int]):
+        self.__size = size
+
+    def __call__(self, image):
+        return keras.ops.image.resize(
+            image, (64, 64), interpolation="bilinear", antialias=True
+        )
 
 def normalise_tensor(tensor: KerasTensor) -> KerasTensor:
     max_val = ops.max(tensor)

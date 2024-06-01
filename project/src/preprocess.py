@@ -1,28 +1,42 @@
 #!/usr/bin/env python3
 
+import csv
 import multiprocessing
 import os
-import csv
-import keras
 import typing as t
+import keras
 import numpy as np
 from data.transforms import (
+    ImageResize,
     grayscale_transform,
-    image_resize,
     normalise_tensor,
     to_tensor,
 )
 
+args = {
+    "csv_source_files": ["test.csv", "train.csv", "validation.csv"],
+    "transforms": [
+        grayscale_transform,
+        to_tensor,
+        ImageResize(size=(64, 64)),
+        normalise_tensor,
+    ],
+    "output_dir": "64x64",
+}
+
 
 def main():
-    csv_source_files = ["test.csv", "train.csv", "validation.csv"]
-    transforms = [grayscale_transform, to_tensor, image_resize, normalise_tensor]
+    make_output_dir(output_dir=args["output_dir"])
 
-    make_output_dir(output_dir="32x32")
-
-    photo_paths = get_photo_paths(csv_source_files=csv_source_files)
-    transform_photos(photo_paths=photo_paths, transforms=transforms, output_dir="32x32")
-    copy_csv_source_files(csv_source_files=csv_source_files, output_dir="32x32")
+    photo_paths = get_photo_paths(csv_source_files=args["csv_source_files"])
+    transform_photos(
+        photo_paths=photo_paths,
+        transforms=args["transforms"],
+        output_dir=args["output_dir"],
+    )
+    copy_csv_source_files(
+        csv_source_files=args["csv_source_files"], output_dir=args["output_dir"]
+    )
 
 
 def get_photo_paths(csv_source_files: t.List[str]) -> t.List[str]:
