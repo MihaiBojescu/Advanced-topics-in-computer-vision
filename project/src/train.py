@@ -14,24 +14,24 @@ def main():
     label_transforms = [label_to_ints]
 
     train_dataset = TensorDataset(
-        data_path="./dataset/64x64",
+        data_path="./dataset/256x256",
         data_file_path="./train.csv",
         label_transforms=label_transforms,
     )
     validation_dataset = TensorDataset(
-        data_path="./dataset/64x64",
+        data_path="./dataset/256x256",
         data_file_path="./validation.csv",
         label_transforms=label_transforms,
     )
     test_dataset = TensorDataset(
-        data_path="./dataset/64x64",
+        data_path="./dataset/256x256",
         data_file_path="./test.csv",
         label_transforms=label_transforms,
     )
 
-    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=64)
-    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=64)
-    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=64)
+    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=1024)
+    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=1024)
+    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=1024)
 
     model = Model()
     model.fit(train_dataloader)

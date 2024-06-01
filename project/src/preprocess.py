@@ -18,10 +18,10 @@ args = {
     "transforms": [
         grayscale_transform,
         to_tensor,
-        ImageResize(size=(64, 64)),
+        ImageResize(size=(256, 256)),
         normalise_tensor,
     ],
-    "output_dir": "64x64",
+    "output_dir": "256x256",
 }
 
 
