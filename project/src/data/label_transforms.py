@@ -1,6 +1,6 @@
 import typing as t
 import keras
-from common import Label
+from data.common import Label
 
 
 def label_to_ints(label: Label):

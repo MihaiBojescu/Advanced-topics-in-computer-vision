@@ -3,9 +3,6 @@ from PIL.Image import Image
 from keras import KerasTensor, ops
 import keras
 
-from src.data.common import Label
-
-
 def grayscale_transform(img: Image) -> Image:
     return img.convert("L")
 
@@ -17,7 +14,7 @@ def to_tensor(img: Image) -> KerasTensor:
 
 def image_resize(image):
     return keras.ops.image.resize(
-        image, (64, 64), interpolation="bicubic", antialias=True
+        image, (64, 64), interpolation="bilinear", antialias=True
     )
 
 
