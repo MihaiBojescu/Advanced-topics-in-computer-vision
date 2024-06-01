@@ -31,7 +31,9 @@ class ImageDataloader(keras.utils.Sequence):
 
     def __load_data(
         self, index: int
-    ) -> t.Tuple[np.ndarray[t.Literal["N"], T], np.ndarray[t.Literal["N"], L], list[int]]:
+    ) -> t.Tuple[
+        np.ndarray[t.Literal["N"], T], np.ndarray[t.Literal["N"], L], list[int]
+    ]:
         batch_start_row_index = index // self._batch_size * self._batch_size
         batch_end_row_index = batch_start_row_index + self._batch_size
         batch_end_row_index = min(batch_end_row_index, len(self._dataset))
@@ -39,7 +41,9 @@ class ImageDataloader(keras.utils.Sequence):
         difference = batch_end_row_index - batch_start_row_index
         difference = max(difference, 0)
 
-        batch_indices = self._dataset_indices[batch_start_row_index:batch_start_row_index + difference]
+        batch_indices = self._dataset_indices[
+            batch_start_row_index : batch_start_row_index + difference
+        ]
 
         first_entry = self._dataset[batch_indices[0]]
 
@@ -54,7 +58,9 @@ class ImageDataloader(keras.utils.Sequence):
         return data, labels, batch_indices
 
     def __len__(self) -> int:
-        return len(self._dataset)
+        return len(self._dataset) // self._batch_size + (
+            1 if len(self._dataset) % self._batch_size > 0 else 0
+        )
 
     def __getitem__(self, index) -> t.Tuple[U, L]:
         if index not in self._current_loaded_batch_indices:

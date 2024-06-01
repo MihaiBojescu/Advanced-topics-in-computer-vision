@@ -1,8 +1,9 @@
 import keras
+import time
 import typing as t
 
 
-class Model(keras.Model):
+class Model(keras.models.Model):
     _conv1: keras.layers.Conv2D
     _conv1_activation: t.Callable[[keras.KerasTensor], keras.KerasTensor]
     _conv2: keras.layers.Conv2D
@@ -13,7 +14,7 @@ class Model(keras.Model):
     _conv4_activation: t.Callable[[keras.KerasTensor], keras.KerasTensor]
     _output_pooling: keras.layers.GlobalAveragePooling2D
     _output: keras.layers.Dense
-    _model: keras.Model
+    _model: keras.models.Model
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,12 +46,15 @@ class Model(keras.Model):
         )
         self._model.compile(
             optimizer=keras.optimizers.Adam(),
-            loss=keras.losses.CategoricalCrossentropy(),
-            metrics=[keras.metrics.CategoricalAccuracy()],
+            loss=keras.losses.MeanSquaredError(),
+            metrics=[keras.metrics.Accuracy()],
         )
 
     def fit(self, dataset):
-        return self._model.fit(dataset, epochs=5)
+        output = self._model.fit(dataset, epochs=5)
+        last_loss = output.history['loss'][-1]
+
+        self._model.save(f'./outputs/model_{time.time_ns()}_loss_{last_loss:.4f}.keras')
 
     def predict(self, x: keras.KerasTensor):
         return self._model.predict(x)
