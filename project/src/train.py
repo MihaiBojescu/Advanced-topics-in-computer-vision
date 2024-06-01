@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 
 from data.dataloader import ImageDataloader
 from data.dataset import TensorDataset
