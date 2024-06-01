@@ -23,15 +23,21 @@ def main():
         data_file_path="./validation.csv",
         label_transforms=label_transforms,
     )
+    test_dataset = TensorDataset(
+        data_path="./dataset/256x256",
+        data_file_path="./test.csv",
+        label_transforms=label_transforms,
+    )
 
-    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=1024)
+    train_dataloader = ImageDataloader(
+        dataset=train_dataset, batch_size=1024, shuffle=True
+    )
     validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=1024)
+    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=1024)
 
     model = Model()
-    model.fit(
-        x=train_dataloader,
-        validation_data=validation_dataloader,
-    )
+    model.fit(x=train_dataloader, validation_data=validation_dataloader, epochs=20)
+    model.evaluate(x=test_dataloader)
 
     # normalized_labels = [normalize_coordinates(label, (img.width, img.height)) for img, label in zip(dataset.__data, dataset.__labels)]
     # dataset.__labels = normalized_labels
