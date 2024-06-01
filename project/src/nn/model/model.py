@@ -28,15 +28,17 @@ class Model(keras.models.Model):
             metrics=[keras.metrics.MeanAbsoluteError()],
         )
 
-    def fit(self, dataset):
+    def fit(self, x, validation_data):
         output = self._model.fit(
-            dataset,
+            x=x,
+            validation_data=validation_data,
             epochs=20,
             callbacks=[keras.callbacks.EarlyStopping(monitor="loss", patience=3)],
         )
         last_loss = output.history["loss"][-1]
+        last_val_loss = output.history["loss"][-1]
 
-        self._model.save(f"./outputs/model_{time.time_ns()}_loss_{last_loss:.4f}.keras")
+        self._model.save(f"./outputs/model_{time.time_ns()}_loss_{last_loss:.4f}_val-loss_{last_val_loss:.4f}.keras")
 
     def predict(self, x: keras.KerasTensor):
         return self._model.predict(x)
