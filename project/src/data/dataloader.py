@@ -2,12 +2,12 @@ import typing as t
 import keras
 import numpy as np
 from data.common import L, T, U
-from data.dataset import ImageDataset
+from data.dataset import TensorDataset
 
 
 class ImageDataloader(keras.utils.Sequence):
     _batch_size: int
-    _dataset: ImageDataset
+    _dataset: TensorDataset
     _dataset_indices: np.ndarray[t.Literal["N"], int]
 
     _current_loaded_batch: int
@@ -15,7 +15,7 @@ class ImageDataloader(keras.utils.Sequence):
     _labels: np.ndarray[t.Literal["N"], L]
 
     def __init__(
-        self, *args, dataset: ImageDataset, batch_size: int, shuffle: bool = False
+        self, *args, dataset: TensorDataset, batch_size: int, shuffle: bool = False
     ):
         super().__init__(*args, use_multiprocessing=True, workers=8)
 

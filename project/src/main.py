@@ -1,16 +1,9 @@
 #!/usr/bin/env bash
 
 from data.dataloader import ImageDataloader
-from data.dataset import ImageDataset
-from data.transforms import (
-    grayscale_transform,
-    image_resize,
-    normalise_tensor,
-    to_tensor,
-)
+from data.dataset import TensorDataset
 from data.label_transforms import (
     label_to_ints,
-    normalize_coordinates,
 )
 from nn.model.model import Model
 from utils.args import parse_arguments
@@ -18,31 +11,27 @@ from utils.args import parse_arguments
 
 def main():
     args = parse_arguments()
-    transforms = [grayscale_transform, to_tensor, image_resize, normalise_tensor]
     label_transforms = [label_to_ints]
 
-    train_dataset = ImageDataset(
-        data_path="./dataset",
+    train_dataset = TensorDataset(
+        data_path="./dataset/64x64",
         data_file_path="./train.csv",
-        transforms=transforms,
         label_transforms=label_transforms,
     )
-    validation_dataset = ImageDataset(
-        data_path="./dataset",
+    validation_dataset = TensorDataset(
+        data_path="./dataset/64x64",
         data_file_path="./validation.csv",
-        transforms=transforms,
         label_transforms=label_transforms,
     )
-    test_dataset = ImageDataset(
-        data_path="./dataset",
+    test_dataset = TensorDataset(
+        data_path="./dataset/64x64",
         data_file_path="./test.csv",
-        transforms=transforms,
         label_transforms=label_transforms,
     )
 
-    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=256)
-    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=256)
-    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=256)
+    train_dataloader = ImageDataloader(dataset=train_dataset, batch_size=32)
+    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=32)
+    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=32)
 
     model = Model()
     model.fit(train_dataloader)
