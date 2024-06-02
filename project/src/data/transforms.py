@@ -24,10 +24,7 @@ class ImageResize:
         )
 
 def normalise_tensor(tensor: KerasTensor) -> KerasTensor:
-    max_val = ops.max(tensor)
-    min_val = ops.min(tensor)
-
-    return (tensor - min_val) / (max_val - min_val)
+    return keras.ops.convert_to_tensor(keras.ops.convert_to_numpy(tensor).astype('float32') / 255.0)
 
 class Padding:
     _max_x: int

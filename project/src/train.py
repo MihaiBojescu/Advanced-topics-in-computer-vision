@@ -30,10 +30,10 @@ def main():
     )
 
     train_dataloader = ImageDataloader(
-        dataset=train_dataset, batch_size=1024, shuffle=True
+        dataset=train_dataset, batch_size=128, shuffle=True
     )
-    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=1024)
-    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=1024)
+    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=128)
+    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=128)
 
     model = Model()
     model.fit(x=train_dataloader, validation_data=validation_dataloader, epochs=20)

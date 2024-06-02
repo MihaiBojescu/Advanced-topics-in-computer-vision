@@ -3,29 +3,64 @@ import time
 
 
 class Model(keras.models.Model):
-    _model: keras.models.Model
+    _model: keras.Sequential
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        input_shape=(None, 256, 256, 1),
+        optimizer=None,
+        loss=None,
+        metrics=None,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
+
+        if optimizer is None:
+            optimizer = keras.optimizers.Adam(clipnorm=1)
+        if loss is None:
+            loss = keras.losses.MeanSquaredLogarithmicError()
+        if metrics is None:
+            metrics = [keras.metrics.MeanAbsoluteError()]
 
         self._model = keras.Sequential(
             [
-                keras.layers.Conv2D(filters=3, kernel_size=(5, 5)),
-                keras.layers.ReLU(),
-                keras.layers.Conv2D(filters=6, kernel_size=(5, 5)),
-                keras.layers.ReLU(),
-                keras.layers.Conv2D(filters=9, kernel_size=(5, 5)),
-                keras.layers.ReLU(),
-                keras.layers.Conv2D(filters=12, kernel_size=(5, 5)),
-                keras.layers.ReLU(),
+                keras.layers.Conv2D(
+                    filters=3,
+                    kernel_size=(5, 5),
+                    kernel_initializer='he_normal',
+                    activation='relu',
+                    input_shape=input_shape[1:],
+                ),
+                keras.layers.BatchNormalization(),
+                keras.layers.Conv2D(
+                    filters=6,
+                    kernel_size=(5, 5),
+                    kernel_initializer='he_normal',
+                    activation='relu'
+                ),
+                keras.layers.BatchNormalization(),
+                keras.layers.Conv2D(
+                    filters=9,
+                    kernel_size=(5, 5),
+                    kernel_initializer='he_normal',
+                    activation='relu',
+                ),
+                keras.layers.Conv2D(
+                    filters=12,
+                    kernel_size=(5, 5),
+                    kernel_initializer='he_normal',
+                    activation='relu',
+                ),
+                keras.layers.BatchNormalization(),
+                keras.layers.Dense(units=2, kernel_initializer='he_normal'),
                 keras.layers.GlobalAveragePooling2D(),
-                keras.layers.Dense(units=2),
             ]
         )
         self._model.compile(
-            optimizer=keras.optimizers.Adam(),
-            loss=keras.losses.MeanSquaredLogarithmicError(),
-            metrics=[keras.metrics.MeanAbsoluteError()],
+            optimizer=optimizer,
+            loss=loss,
+            metrics=metrics,
         )
 
     def fit(self, x, validation_data, epochs: int):
@@ -33,18 +68,27 @@ class Model(keras.models.Model):
             x=x,
             validation_data=validation_data,
             epochs=epochs,
-            callbacks=[keras.callbacks.EarlyStopping(monitor="loss", patience=3)],
+            callbacks=[keras.callbacks.EarlyStopping(monitor="val_loss", patience=3)],
         )
         last_loss = output.history["loss"][-1]
-        last_val_loss = output.history["loss"][-1]
+        last_val_loss = output.history["val_loss"][-1]
+        model_name = (
+            f"model_epochs{epochs}_loss{last_loss:.4f}_val-loss{last_val_loss:.4f}"
+        )
 
-        self._model.save(f"./outputs/model_{time.time_ns()}_loss_{last_loss:.4f}_val-loss_{last_val_loss:.4f}.keras")
+        self._model.save_weights(
+            f"./outputs/{model_name}_{time.time_ns()}.weights.h5",
+            overwrite=True,
+        )
 
     def evaluate(self, x):
         results = self._model.evaluate(x=x)
-        
+
         print(f"Test loss           = {results[0]:.4f}")
         print(f"Test absolute error = {results[1]:.4f}")
 
-    def predict(self, x: keras.KerasTensor):
+    def load_weights(self, filepath: str):
+        self._model.load_weights(filepath)
+
+    def predict(self, x):
         return self._model.predict(x)
