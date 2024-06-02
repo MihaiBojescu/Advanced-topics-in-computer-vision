@@ -10,7 +10,7 @@ class ImageDataloader(keras.utils.Sequence):
     _dataset: TensorDataset
     _dataset_indices: np.ndarray[t.Literal["N"], int]
 
-    _current_loaded_batch: int
+    _currently_loaded_batch_index: t.Optional[int]
     _data: np.ndarray[t.Literal["N"], T]
     _labels: np.ndarray[t.Literal["N"], L]
 
@@ -24,7 +24,7 @@ class ImageDataloader(keras.utils.Sequence):
         self._batch_size = batch_size
         self._shuffle = shuffle
 
-        self._current_loaded_batch_indices = []
+        self._currently_loaded_batch_index = None
 
         if self._shuffle:
             np.random.shuffle(self._dataset_indices)
@@ -34,7 +34,7 @@ class ImageDataloader(keras.utils.Sequence):
     ) -> t.Tuple[
         np.ndarray[t.Literal["N"], T], np.ndarray[t.Literal["N"], L], list[int]
     ]:
-        batch_start_row_index = index // self._batch_size * self._batch_size
+        batch_start_row_index = index * self._batch_size
         batch_end_row_index = batch_start_row_index + self._batch_size
         batch_end_row_index = min(batch_end_row_index, len(self._dataset))
 
@@ -50,12 +50,15 @@ class ImageDataloader(keras.utils.Sequence):
         data = np.empty((difference, *first_entry[0].shape), dtype=np.float32)
         labels = np.empty((difference, *first_entry[1].shape), dtype=np.int32)
 
-        for i in range(1, self._batch_size):
+        data[0][:, :, :] = first_entry[0]
+        labels[0][:] = first_entry[1]
+
+        for i in range(1, difference):
             value = self._dataset[batch_indices[i]]
             data[i][:, :, :] = value[0]
             labels[i][:] = value[1]
 
-        return data, labels, batch_indices
+        return data, labels
 
     def __len__(self) -> int:
         return len(self._dataset) // self._batch_size + (
@@ -63,9 +66,8 @@ class ImageDataloader(keras.utils.Sequence):
         )
 
     def __getitem__(self, index) -> t.Tuple[U, L]:
-        if index not in self._current_loaded_batch_indices:
-            self._data, self._labels, self._current_loaded_batch_indices = (
-                self.__load_data(index=index)
-            )
+        if index != self._currently_loaded_batch_index:
+            self._data, self._labels = self.__load_data(index=index)
+            self._currently_loaded_batch_index = index
 
         return self._data, self._labels
