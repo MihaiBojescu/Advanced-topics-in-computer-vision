@@ -19,7 +19,7 @@ class Model(keras.models.Model):
         if optimizer is None:
             optimizer = keras.optimizers.Adam(clipnorm=1)
         if loss is None:
-            loss = keras.losses.MeanSquaredLogarithmicError()
+            loss = keras.losses.MeanSquaredError()
         if metrics is None:
             metrics = [keras.metrics.MeanAbsoluteError()]
 

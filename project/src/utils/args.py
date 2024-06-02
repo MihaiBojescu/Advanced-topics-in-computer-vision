@@ -19,7 +19,7 @@ def parse_arguments() -> Args:
     parser.add_argument(
         "--batch-size",
         help="The batch size to use. Use 0 for on batched (offline) learning. Use 1 for online training.",
-        default=25,
+        default=128,
         type=int,
     )
     result = parser.parse_args()

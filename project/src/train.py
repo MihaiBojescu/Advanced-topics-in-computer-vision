@@ -30,14 +30,17 @@ def main():
     )
 
     train_dataloader = ImageDataloader(
-        dataset=train_dataset, batch_size=128, shuffle=True
+        dataset=train_dataset, batch_size=args.batch_size, shuffle=True
     )
-    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=128)
-    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=128)
+    validation_dataloader = ImageDataloader(dataset=validation_dataset, batch_size=args.batch_size)
+    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=args.batch_size)
 
     model = Model()
-    model.fit(x=train_dataloader, validation_data=validation_dataloader, epochs=20)
+    model.fit(x=train_dataloader, validation_data=validation_dataloader, epochs=args.epochs)
     model.evaluate(x=test_dataloader)
+    outputs = model.predict(x=test_dataloader)
+
+    print(outputs)
 
     # normalized_labels = [normalize_coordinates(label, (img.width, img.height)) for img, label in zip(dataset.__data, dataset.__labels)]
     # dataset.__labels = normalized_labels
