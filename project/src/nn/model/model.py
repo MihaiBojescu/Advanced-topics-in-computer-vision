@@ -82,10 +82,13 @@ class Model(keras.models.Model):
         )
 
     def evaluate(self, x):
-        results = self._model.evaluate(x=x)
+        results = self._model.evaluate(x=x)        
+        mean_absolute_error = results[1]
+        accuracy = (1 - mean_absolute_error) * 100
 
         print(f"Test loss           = {results[0]:.4f}")
-        print(f"Test absolute error = {results[1]:.4f}")
+        print(f"Test absolute error = {mean_absolute_error:.4f}")        
+        print(f"Accuracy %          = {accuracy:.4f}")
 
     def load_weights(self, filepath: str):
         self._model.load_weights(filepath)
