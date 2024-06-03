@@ -17,7 +17,7 @@ def main():
     test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=1024)
 
     model = Model()
-    model.load_weights("./outputs/model_epochs20_loss22.8896_val-loss23.2977_1717352291624088501.weights.h5")
+    model.load_weights("./outputs/model_epochs25_loss162038.4062_val-loss243631.0156_1717439475669035715.weights.h5")
     
     result = model.predict(x=test_dataloader)
 
