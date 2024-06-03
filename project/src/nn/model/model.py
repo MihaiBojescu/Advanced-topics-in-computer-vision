@@ -53,8 +53,8 @@ class Model(keras.models.Model):
                     activation='relu',
                 ),
                 keras.layers.BatchNormalization(),
+                keras.layers.GlobalMaxPool2D(),
                 keras.layers.Dense(units=2, kernel_initializer='he_normal'),
-                keras.layers.GlobalAveragePooling2D(),
             ]
         )
         self._model.compile(
