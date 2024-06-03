@@ -28,33 +28,33 @@ class Model(keras.models.Model):
                 keras.layers.Conv2D(
                     filters=3,
                     kernel_size=(5, 5),
-                    kernel_initializer='he_normal',
-                    activation='relu',
+                    kernel_initializer="he_normal",
+                    activation="relu",
                     input_shape=input_shape[1:],
                 ),
                 keras.layers.BatchNormalization(),
                 keras.layers.Conv2D(
                     filters=6,
                     kernel_size=(5, 5),
-                    kernel_initializer='he_normal',
-                    activation='relu'
+                    kernel_initializer="he_normal",
+                    activation="relu",
                 ),
                 keras.layers.BatchNormalization(),
                 keras.layers.Conv2D(
                     filters=9,
                     kernel_size=(5, 5),
-                    kernel_initializer='he_normal',
-                    activation='relu',
+                    kernel_initializer="he_normal",
+                    activation="relu",
                 ),
                 keras.layers.Conv2D(
                     filters=12,
                     kernel_size=(5, 5),
-                    kernel_initializer='he_normal',
-                    activation='relu',
+                    kernel_initializer="he_normal",
+                    activation="relu",
                 ),
                 keras.layers.BatchNormalization(),
                 keras.layers.GlobalMaxPool2D(),
-                keras.layers.Dense(units=2, kernel_initializer='he_normal'),
+                keras.layers.Dense(units=2, kernel_initializer="he_normal"),
             ]
         )
         self._model.compile(
