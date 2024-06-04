@@ -96,5 +96,5 @@ class Model(keras.models.Model):
     def predict(self, x):
         return self._model.predict(x)
     
-    def predictOne(self, x: SingleImageDataloader):
+    def predictOne(self, x):
         return self._model.predict(x)

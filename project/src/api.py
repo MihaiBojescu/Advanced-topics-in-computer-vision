@@ -34,7 +34,7 @@ def get_image_data(request):
 def predict_coordinates(image_file):
     dataloader = SingleImageDataLoader(image_file)
     image_array = dataloader.load_data()
-    predictions = model.predictOne(image_array)
+    predictions = model.predict(image_array)
     normalized_x, normalized_y = predictions[0]
 
     return normalized_x, normalized_y
