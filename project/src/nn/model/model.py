@@ -1,5 +1,6 @@
 import keras
 import time
+from nn.model.loss import BoundedMeanSquaredError
 
 class Model(keras.models.Model):
     _model: keras.Sequential
@@ -18,7 +19,7 @@ class Model(keras.models.Model):
         if optimizer is None:
             optimizer = keras.optimizers.Adam(clipnorm=1)
         if loss is None:
-            loss = keras.losses.MeanSquaredError()
+            loss = BoundedMeanSquaredError(lower_bound=0, upper_bound=1, penalty=1000)
         if metrics is None:
             metrics = [keras.metrics.MeanAbsoluteError()]
 
@@ -81,11 +82,11 @@ class Model(keras.models.Model):
         )
 
     def evaluate(self, x):
-        results = self._model.evaluate(x=x)        
+        results = self._model.evaluate(x=x)
         mean_absolute_error = results[1]
 
         print(f"Test loss           = {results[0]:.4f}")
-        print(f"Test absolute error = {mean_absolute_error:.4f}")        
+        print(f"Test absolute error = {mean_absolute_error:.4f}")
 
     def load_weights(self, filepath: str):
         self._model.load_weights(filepath)
