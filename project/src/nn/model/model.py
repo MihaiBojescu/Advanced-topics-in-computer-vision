@@ -1,6 +1,5 @@
 import keras
 import time
-from data.dataloader import SingleImageDataLoader
 
 class Model(keras.models.Model):
     _model: keras.Sequential
@@ -94,7 +93,4 @@ class Model(keras.models.Model):
         self._model.load_weights(filepath)
 
     def predict(self, x):
-        return self._model.predict(x)
-    
-    def predictOne(self, x):
         return self._model.predict(x)
