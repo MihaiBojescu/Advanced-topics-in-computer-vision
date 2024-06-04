@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 model = Model()
 # just hardcode path to weights ig
-model.load_weights("./outputs/model_epochs25_loss162038.4062_val-loss243631.0156_1717439475669035715.weights.h5")
+model.load_weights("./outputs/unnormalised/model_epochs25_loss162038.4062_val-loss243631.0156_1717439475669035715.weights.h5")
 
 def get_bytes_image_data(request):
     if not request.data:
