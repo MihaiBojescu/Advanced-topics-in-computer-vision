@@ -3,7 +3,13 @@ import keras
 import numpy as np
 from data.common import L, T, U
 from data.dataset import TensorDataset
-
+from PIL import Image
+from transforms import (
+    grayscale_transform,
+    to_tensor,
+    ImageResize,
+    normalise_tensor,
+)
 
 class ImageDataloader(keras.utils.Sequence):
     _batch_size: int
@@ -71,3 +77,20 @@ class ImageDataloader(keras.utils.Sequence):
             self._currently_loaded_batch_index = index
 
         return self._data, self._labels
+
+class SingleImageDataLoader:
+    def __init__(self, image_file):
+        self.image_file = image_file
+        self.transforms = [
+            grayscale_transform,
+            to_tensor,
+            ImageResize(size=(256, 256)),
+            normalise_tensor,
+        ]
+
+    def load_data(self):
+        image = Image.open(self.image_file)
+        for transform in self.transforms:
+            image = transform(image)
+        image_array = np.expand_dims(image, axis=0)
+        return image_array
