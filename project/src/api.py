@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-from src.data.dataloader import SingleImageDataLoader
-from src.nn.model.model import Model
+from data.dataloader import SingleImageDataLoader
+from nn.model.model import Model
 import io
 from PIL import Image
 
@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 model = Model()
 # just hardcode path to weights ig
-model.load_weights("mock_model_weights.npy")
+model.load_weights("./outputs/model_epochs25_loss162038.4062_val-loss243631.0156_1717439475669035715.weights.h5")
 
 def get_bytes_image_data(request):
     if not request.data:
@@ -33,17 +33,11 @@ def get_image_data(request):
 
 def predict_coordinates(image_file):
     dataloader = SingleImageDataLoader(image_file)
-    predictions = model.predictOne(dataloader)
-    normalized_x, normalized_y = predictions
+    image_array = dataloader.load_data()
+    predictions = model.predictOne(image_array)
+    normalized_x, normalized_y = predictions[0]
 
-    # this un-normalizes the coordinates but according to the image size not screen resolution idk
-
-    image = Image.open(image_file)
-    width, height = image.size
-
-    x, y = (int(normalized_x * width),  int(normalized_y * height))
-    
-    return x, y
+    return normalized_x, normalized_y
 
 @app.route("/predict", methods=["POST"])
 def predict():

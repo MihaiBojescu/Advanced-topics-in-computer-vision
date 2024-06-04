@@ -4,7 +4,7 @@ import numpy as np
 from data.common import L, T, U
 from data.dataset import TensorDataset
 from PIL import Image
-from transforms import (
+from data.transforms import (
     grayscale_transform,
     to_tensor,
     ImageResize,
