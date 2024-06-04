@@ -78,8 +78,8 @@ class TensorDataset(keras.utils.Sequence):
         row = self._data_file_rows[index]
 
         filename = row[0]
-        x = int(float(row[1]))
-        y = int(float(row[2]))
+        x = float(row[-2])
+        y = float(row[-1])
         width = int(row[3])
         height = int(row[4])
         distance = float(row[5])
