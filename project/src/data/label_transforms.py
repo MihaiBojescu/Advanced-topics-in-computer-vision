@@ -3,8 +3,11 @@ import keras
 from data.common import Label
 
 
-def label_to_ints(label: Label):
+def label_to_tensor(label: Label):
     return keras.ops.convert_to_tensor([label.x, label.y])
+
+def label_scaling(label):
+    return label * 2 - 1
 
 
 def normalize_coordinates(

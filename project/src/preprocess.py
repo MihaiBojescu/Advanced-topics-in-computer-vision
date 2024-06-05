@@ -10,6 +10,7 @@ import keras
 import numpy as np
 from data.transforms import (
     ImageResize,
+    crop_images,
     grayscale_transform,
     normalise_tensor,
     to_tensor,
@@ -20,7 +21,7 @@ args = {
     "validation_csv_file": "validation.csv",
     "test_csv_file": "test.csv",
     "copies": 8,
-    "preprocessing": [grayscale_transform, to_tensor, ImageResize(size=(256, 256))],
+    "preprocessing": [grayscale_transform, to_tensor, crop_images, ImageResize(size=(128, 128))],
     "processing": [
         keras.layers.RandomFlip(),
         keras.layers.RandomTranslation(height_factor=0.5, width_factor=0.5),
@@ -56,6 +57,7 @@ def main():
         preprocessing=args["preprocessing"],
         processing=args["processing"],
         postprocessing=args["postprocessing"],
+        input_dir=args["input_dir"],
         output_dir=args["output_dir"],
     )
     processed_validation_photo_paths_batches = transform_photos(
@@ -64,6 +66,7 @@ def main():
         preprocessing=args["preprocessing"],
         processing=[],
         postprocessing=args["postprocessing"],
+        input_dir=args["input_dir"],
         output_dir=args["output_dir"],
     )
     processed_test_photo_paths_batches = transform_photos(
@@ -72,6 +75,7 @@ def main():
         preprocessing=args["preprocessing"],
         processing=[],
         postprocessing=args["postprocessing"],
+        input_dir=args["input_dir"],
         output_dir=args["output_dir"],
     )
 
@@ -133,6 +137,7 @@ def transform_photos(
     preprocessing: t.List[t.Callable[[any], any]],
     processing: t.List[t.Callable[[any], any]],
     postprocessing: t.List[t.Callable[[any], any]],
+    input_dir: str,
     output_dir: str,
 ):
     print("Transforming photo files...")
@@ -147,6 +152,7 @@ def transform_photos(
             preprocessing,
             processing,
             postprocessing,
+            input_dir,
             output_dir,
         )
         for row in rows
@@ -171,6 +177,7 @@ def transform_photo(
     preprocessing: t.List[t.Callable[[any], any]],
     processing: t.List[t.Callable[[any], any]],
     postprocessing: t.List[t.Callable[[any], any]],
+    input_dir: str,
     output_dir: str,
 ):
     photo = keras.utils.load_img(f"./dataset/original/images/{row[0]}")
@@ -200,7 +207,7 @@ def transform_photo(
     with global_shared_index.get_lock():
         global_shared_index.value += 1
         print(
-            f"\tProcessed ./dataset/{output_dir}/{row[0]}, made {copies} copies ({global_shared_index.value}/{total})"
+            f"\t[{(global_shared_index.value / total) * 100:8.4f}%] Processed {copies} copies of ./dataset/{input_dir}/{row[0]}"
         )
 
     return outputs

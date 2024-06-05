@@ -3,6 +3,7 @@ from PIL.Image import Image
 from keras import KerasTensor, ops
 import keras
 
+
 def grayscale_transform(img: Image) -> Image:
     return img.convert("L")
 
@@ -20,11 +21,27 @@ class ImageResize:
 
     def __call__(self, image):
         return keras.ops.image.resize(
-            image, (64, 64), interpolation="bilinear", antialias=True
+            image, self.__size, interpolation="bilinear", antialias=True
         )
 
+
 def normalise_tensor(tensor: KerasTensor) -> KerasTensor:
-    return keras.ops.convert_to_tensor(keras.ops.convert_to_numpy(tensor).astype('float32') / 255.0)
+    return keras.ops.convert_to_tensor(
+        keras.ops.convert_to_numpy(tensor).astype("float32") / 255.0
+    )
+
+
+def crop_images(image):
+    shape = image.shape
+
+    return keras.ops.image.crop_images(
+        image,
+        top_cropping=int(shape[1] / 7),
+        bottom_cropping=int(shape[1] / 4),
+        left_cropping=int(shape[0] / 3),
+        right_cropping=int(shape[0] / 3),
+    )
+
 
 class Padding:
     _max_x: int

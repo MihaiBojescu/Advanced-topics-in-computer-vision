@@ -18,7 +18,7 @@ class BoundedMeanSquaredError:
 
     def __call__(self, y_true, y_pred):
         mse = keras.ops.mean(keras.ops.square(y_pred - y_true), axis=-1)
-        loss = mse + self._penalty * keras.ops.mean(
+        loss = mse * self._penalty * keras.ops.mean(
             keras.ops.square(
                 y_pred - keras.ops.clip(y_pred, self._lower_bound, self._upper_bound)
             ),

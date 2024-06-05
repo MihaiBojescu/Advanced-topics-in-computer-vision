@@ -88,7 +88,7 @@ class SingleImageDataLoader(keras.utils.PyDataset):
         self.transforms = [
             grayscale_transform,
             to_tensor,
-            ImageResize(size=(256, 256)),
+            ImageResize(size=(128, 128)),
             normalise_tensor,
         ]
 

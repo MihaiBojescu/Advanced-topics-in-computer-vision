@@ -7,7 +7,7 @@ class Model(keras.models.Model):
 
     def __init__(
         self,
-        input_shape=(None, 256, 256, 1),
+        input_shape=(None, 128, 128, 1),
         optimizer=None,
         loss=None,
         metrics=None,
@@ -17,9 +17,9 @@ class Model(keras.models.Model):
         super().__init__(*args, **kwargs)
 
         if optimizer is None:
-            optimizer = keras.optimizers.Adam(clipnorm=1)
+            optimizer = keras.optimizers.Adam()
         if loss is None:
-            loss = BoundedMeanSquaredError(lower_bound=0, upper_bound=1, penalty=1000)
+            loss = BoundedMeanSquaredError(lower_bound=-1, upper_bound=1, penalty=1000)
         if metrics is None:
             metrics = [keras.metrics.MeanAbsoluteError()]
 
