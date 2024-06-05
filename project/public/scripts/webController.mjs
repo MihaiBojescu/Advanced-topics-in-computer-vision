@@ -46,24 +46,27 @@ export const makeWebController = (params) => {
  * @return {WebController['send']}
  */
 const send = self => async (contentType, data) => {
-    console.log({ contentType, data })
-    const response = await fetch(self.url, {
-        method: 'POST',
-        headers: {
-            'Content-type': contentType || 'application/octet-stream'
-        },
-        body: data
-    })
-    /**
-     * @type {Coordinates}
-     */
-    const coordinates = response.json()
-
-    for await (const callback of self.callbacks) {
-        await callback(coordinates)
+    try {
+        const response = await fetch(self.url, {
+            method: 'POST',
+            headers: {
+                'Content-type': contentType || 'application/octet-stream'
+            },
+            body: data
+        })
+        /**
+         * @type {Coordinates}
+         */
+        const coordinates = await response.json()
+    
+        for await (const callback of self.callbacks) {
+            await callback(coordinates)
+        }
+    
+        return coordinates
+    } catch (error) {
+        console.error(error)
     }
-
-    return coordinates
 }
 
 /**
