@@ -79,6 +79,7 @@ class ImageDataloader(keras.utils.PyDataset):
         return self._data, self._labels
 
 class SingleImageDataLoader:
+class SingleImageDataLoader(keras.utils.PyDataset):
     def __init__(self, image_file):
         self.image_file = image_file
         self.transforms = [
@@ -88,7 +89,10 @@ class SingleImageDataLoader:
             normalise_tensor,
         ]
 
-    def load_data(self):
+    def __len__(self):
+        return 1
+
+    def __getitem__(self, _index):
         image = Image.open(self.image_file)
         for transform in self.transforms:
             image = transform(image)

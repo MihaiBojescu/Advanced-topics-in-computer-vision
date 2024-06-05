@@ -10,7 +10,8 @@ app = Flask(__name__)
 
 model = Model()
 # just hardcode path to weights ig
-model.load_weights("./outputs/unnormalised/model_epochs25_loss65134.7148_val-loss193620.2500_1717480603049776358.weights.h5")
+# model.load_weights("./outputs/unnormalised/model_epochs25_loss162038.4062_val-loss243631.0156_1717439475669035715.weights.h5")
+model.load_weights("./outputs/normalised/model_epochs25_loss0.0002_val-loss0.0011_1717523771376963386.weights.h5")
 
 
 def get_form_image_data(request):
@@ -46,8 +47,7 @@ def get_image_data(request):
 
 def predict_coordinates(image_file):
     dataloader = SingleImageDataLoader(image_file)
-    image_array = dataloader.load_data()
-    predictions = model.predict(image_array)
+    predictions = model.predict(dataloader)
     normalized_x, normalized_y = predictions[0]
 
     return normalized_x, normalized_y
