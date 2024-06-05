@@ -64,27 +64,36 @@ class Model(keras.models.Model):
         )
 
     def fit(self, x, validation_data, epochs: int):
-        output = self._model.fit(
-            x=x,
-            validation_data=validation_data,
-            epochs=epochs,
-            callbacks=[
-                keras.callbacks.EarlyStopping(monitor="val_loss", patience=3),
-                keras.callbacks.LambdaCallback(
-                    on_epoch_end=lambda _epochs, _logs: x.on_epoch_end()
-                )
-            ],
-        )
-        last_loss = output.history["loss"][-1]
-        last_val_loss = output.history["val_loss"][-1]
-        model_name = (
-            f"model_epochs{epochs}_loss{last_loss:.4f}_val-loss{last_val_loss:.4f}"
-        )
+        try :
+            output = self._model.fit(
+                x=x,
+                validation_data=validation_data,
+                epochs=epochs,
+                callbacks=[
+                    keras.callbacks.EarlyStopping(monitor="val_loss", patience=3),
+                    keras.callbacks.LambdaCallback(
+                        on_epoch_end=lambda _epochs, _logs: x.on_epoch_end()
+                    )
+                ],
+            )
+            last_loss = output.history["loss"][-1]
+            last_val_loss = output.history["val_loss"][-1]
+            model_name = (
+                f"model_epochs{epochs}_loss{last_loss:.4f}_val-loss{last_val_loss:.4f}"
+            )
 
-        self._model.save_weights(
-            f"./outputs/{model_name}_{time.time_ns()}.weights.h5",
-            overwrite=True,
-        )
+            self._model.save_weights(
+                f"./outputs/{model_name}_{time.time_ns()}.weights.h5",
+                overwrite=True,
+            )
+        except KeyboardInterrupt:
+            model_name = (
+                f"model_epochs{epochs}"
+            )
+            self._model.save_weights(
+                f"./outputs/{model_name}_{time.time_ns()}.weights.h5",
+                overwrite=True,
+            )
 
     def evaluate(self, x):
         results = self._model.evaluate(x=x)
