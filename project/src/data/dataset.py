@@ -3,8 +3,6 @@ import typing as t
 import keras
 import numpy as np
 from dataclasses import dataclass
-from keras.preprocessing.image import load_img
-from multiprocessing.pool import Pool
 
 
 @dataclass
@@ -28,7 +26,7 @@ U = t.TypeVar("U")
 L = t.TypeVar("L")
 
 
-class TensorDataset(keras.utils.Sequence):
+class TensorDataset(keras.utils.PyDataset):
     _data_path: str
     _data_file_path: str
     _label_transforms: t.Optional[t.Callable[[T], U]]

@@ -11,7 +11,7 @@ from data.transforms import (
     normalise_tensor,
 )
 
-class ImageDataloader(keras.utils.Sequence):
+class ImageDataloader(keras.utils.PyDataset):
     _batch_size: int
     _dataset: TensorDataset
     _dataset_indices: np.ndarray[t.Literal["N"], int]
