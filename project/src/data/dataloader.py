@@ -77,8 +77,11 @@ class ImageDataloader(keras.utils.PyDataset):
             self._currently_loaded_batch_index = index
 
         return self._data, self._labels
+    
+    def on_epoch_end(self):
+        np.random.shuffle(self._dataset_indices)
+        
 
-class SingleImageDataLoader:
 class SingleImageDataLoader(keras.utils.PyDataset):
     def __init__(self, image_file):
         self.image_file = image_file

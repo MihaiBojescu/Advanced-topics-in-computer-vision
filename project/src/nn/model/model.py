@@ -53,7 +53,7 @@ class Model(keras.models.Model):
                     activation="relu",
                 ),
                 keras.layers.BatchNormalization(),
-                keras.layers.GlobalMaxPool2D(),
+                keras.layers.GlobalAveragePooling2D(),
                 keras.layers.Dense(units=2, kernel_initializer="he_normal"),
             ]
         )
@@ -68,7 +68,12 @@ class Model(keras.models.Model):
             x=x,
             validation_data=validation_data,
             epochs=epochs,
-            callbacks=[keras.callbacks.EarlyStopping(monitor="val_loss", patience=3)],
+            callbacks=[
+                keras.callbacks.EarlyStopping(monitor="val_loss", patience=3),
+                keras.callbacks.LambdaCallback(
+                    on_epoch_end=lambda _epochs, _logs: x.on_epoch_end()
+                )
+            ],
         )
         last_loss = output.history["loss"][-1]
         last_val_loss = output.history["val_loss"][-1]
