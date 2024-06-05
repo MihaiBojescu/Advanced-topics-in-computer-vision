@@ -3,7 +3,8 @@
 from data.dataloader import ImageDataloader
 from data.dataset import TensorDataset
 from data.label_transforms import (
-    label_to_ints,
+    label_scaling,
+    label_to_tensor,
 )
 from nn.model.model import Model
 from utils.args import parse_arguments
@@ -11,20 +12,20 @@ from utils.args import parse_arguments
 
 def main():
     args = parse_arguments()
-    label_transforms = [label_to_ints]
+    label_transforms = [label_to_tensor, label_scaling]
 
     train_dataset = TensorDataset(
-        data_path="./dataset/256x256",
+        data_path="./dataset/128x128-augmented-1",
         data_file_path="./train.csv",
         label_transforms=label_transforms,
     )
     validation_dataset = TensorDataset(
-        data_path="./dataset/256x256",
+        data_path="./dataset/128x128-augmented-1",
         data_file_path="./validation.csv",
         label_transforms=label_transforms,
     )
     test_dataset = TensorDataset(
-        data_path="./dataset/256x256",
+        data_path="./dataset/128x128-augmented-1",
         data_file_path="./test.csv",
         label_transforms=label_transforms,
     )
