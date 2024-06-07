@@ -13,13 +13,13 @@ def parse_arguments() -> Args:
     parser.add_argument(
         "--epochs",
         help="Epochs to run",
-        default=25,
+        default=10,
         type=int,
     )
     parser.add_argument(
         "--batch-size",
         help="The batch size to use. Use 0 for on batched (offline) learning. Use 1 for online training.",
-        default=128,
+        default=64,
         type=int,
     )
     result = parser.parse_args()

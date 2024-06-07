@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import utils.prerequisites
+from torch.utils.data import DataLoader
 from data.dataloader import ImageDataloader
 from data.dataset import TensorDataset
 from data.label_transforms import (
@@ -12,7 +14,7 @@ from utils.args import parse_arguments
 
 def main():
     args = parse_arguments()
-    label_transforms = [label_to_tensor, label_scaling]
+    label_transforms = [label_to_tensor]
 
     train_dataset = TensorDataset(
         data_path="./dataset/128x128-augmented-1",
@@ -30,15 +32,17 @@ def main():
         label_transforms=label_transforms,
     )
 
-    train_dataloader = ImageDataloader(
-        dataset=train_dataset, batch_size=args.batch_size, shuffle=True
+    train_dataloader = DataLoader(
+        dataset=train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4
     )
-    validation_dataloader = ImageDataloader(
-        dataset=validation_dataset, batch_size=args.batch_size
+    validation_dataloader = DataLoader(
+        dataset=validation_dataset, batch_size=args.batch_size, num_workers=4
     )
-    test_dataloader = ImageDataloader(dataset=test_dataset, batch_size=args.batch_size)
+    test_dataloader = DataLoader(
+        dataset=test_dataset, batch_size=args.batch_size, num_workers=4
+    )
 
-    model = Model()
+    model = Model(input_shape=(None, 128, 128, 1))
     model.fit(
         x=train_dataloader, validation_data=validation_dataloader, epochs=args.epochs
     )

@@ -87,13 +87,15 @@ const setup = (self) => () => {
  * @return {CanvasController['update']}
  */
 const update = (self) => async coordinates => {
-    const x = coordinates.x * self.dpi
-    const y = coordinates.y * self.dpi
+    const x = coordinates.x
+    const y = coordinates.y
+
+    console.log({ x, y }, coordinates.x, coordinates.y)
 
     self.context.fillStyle = '#000000'
     self.context.fillRect(0, 0, self.width, self.height)
 
-    self.context.fillStyle = '#C0C0C0'
+    self.context.strokeStyle = '#C0C0C0'
     self.context.beginPath()
     self.context.arc(x, y, self.errorRadius, 0, 2 * Math.PI)
     self.context.stroke()

@@ -5,6 +5,7 @@ from data.common import L, T, U
 from data.dataset import TensorDataset
 from PIL import Image
 from data.transforms import (
+    crop_images,
     grayscale_transform,
     to_tensor,
     ImageResize,
@@ -83,12 +84,12 @@ class ImageDataloader(keras.utils.PyDataset):
         
 
 class SingleImageDataLoader(keras.utils.PyDataset):
-    def __init__(self, image_file):
+    def __init__(self, image_file, output_size: t.Tuple[int, int] = (128, 128)):
         self.image_file = image_file
         self.transforms = [
             grayscale_transform,
             to_tensor,
-            ImageResize(size=(128, 128)),
+            ImageResize(size=output_size),
             normalise_tensor,
         ]
 

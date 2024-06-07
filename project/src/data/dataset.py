@@ -1,8 +1,9 @@
 import csv
+from dataclasses import dataclass
 import typing as t
 import keras
 import numpy as np
-from dataclasses import dataclass
+from torch.utils.data import Dataset
 
 
 @dataclass
@@ -26,7 +27,7 @@ U = t.TypeVar("U")
 L = t.TypeVar("L")
 
 
-class TensorDataset(keras.utils.PyDataset):
+class TensorDataset(Dataset):
     _data_path: str
     _data_file_path: str
     _label_transforms: t.Optional[t.Callable[[T], U]]
@@ -44,8 +45,6 @@ class TensorDataset(keras.utils.PyDataset):
         data_file_path: t.Optional[str],
         label_transforms: t.Optional[t.Callable[[L], L]] = None,
     ):
-        super().__init__(*args, use_multiprocessing=True, workers=8)
-
         self._data_path = data_path
         self._data_file_path = (
             data_file_path if data_file_path is not None else "train.csv"
@@ -76,8 +75,8 @@ class TensorDataset(keras.utils.PyDataset):
         row = self._data_file_rows[index]
 
         filename = row[0]
-        x = float(row[-2])
-        y = float(row[-1])
+        x = float(row[1])
+        y = float(row[2])
         width = int(row[3])
         height = int(row[4])
         distance = float(row[5])

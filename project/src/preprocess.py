@@ -20,13 +20,9 @@ args = {
     "training_csv_file": "train.csv",
     "validation_csv_file": "validation.csv",
     "test_csv_file": "test.csv",
-    "copies": 8,
-    "preprocessing": [grayscale_transform, to_tensor, crop_images, ImageResize(size=(128, 128))],
+    "copies": 4,
+    "preprocessing": [grayscale_transform, to_tensor, crop_images, ImageResize(size=(256, 256))],
     "processing": [
-        keras.layers.RandomFlip(),
-        keras.layers.RandomTranslation(height_factor=0.5, width_factor=0.5),
-        keras.layers.RandomRotation(factor=0.5),
-        keras.layers.RandomZoom(height_factor=0.2, width_factor=0.2),
         keras.layers.RandomContrast(factor=0.3),
         keras.layers.RandomBrightness(factor=0.3),
     ],
@@ -34,7 +30,7 @@ args = {
         normalise_tensor,
     ],
     "input_dir": "original",
-    "output_dir": "256x256",
+    "output_dir": "256x256-augmented-2",
 }
 
 
@@ -159,7 +155,7 @@ def transform_photos(
     ]
     outputs = []
 
-    with multiprocessing.Pool(10, initializer=pool_init, initargs=(index,)) as pool:
+    with multiprocessing.Pool(4, initializer=pool_init, initargs=(index,)) as pool:
         outputs = pool.starmap(transform_photo, pool_args)
 
     return outputs
